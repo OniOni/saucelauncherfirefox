@@ -1,0 +1,45 @@
+<link href="./css/saucelauncher.css" media="screen" rel="stylesheet" type="text/css" />
+ 
+<script language="javascript" type="text/javascript" src="./js/jquery.min.js"></script>
+<script language="javascript" type="text/javascript" src="./js/sauceoptions.js"></script>
+
+<link href="css/bootleg.css" media="screen" rel="stylesheet" type="text/css" />
+<script language="javascript" type="text/javascript" src="js/bootleg.js"></script>
+
+<div style="padding:20px">
+  <div style="float:left">
+    <h1>Welcome to Sauce Launcher!</h1>
+    <h3>We need your Sauce Credentials to launch Scout Sessions for you..</h3>
+  </div>
+  
+  <div style="float:right">
+    <img style="width:100px;padding:20px" src="./img/sauce_logo.png">
+  </div>
+  
+  <div style="clear:both"/>
+  
+  <hr>
+  <div id="sauceContent" class="container">
+    <fieldset id="sauceCreateContainer" class="sauceContainer">
+      <legend><h2>Create an account! <span class="green">(It's FREE)</span></h2></legend>
+      <label>Name: </label>
+      <input type="text" name="name" id="name">
+      <label>Email: </label>
+      <input type="text" name="email" id="email">
+      <label>Password: </label>
+      <input type="password" name="password" id="password">
+      <button class="pullRight" type="button" id="createAccount">Sign Up</button>
+    </fieldset>
+    <div style="color: red; " id="sauceCreateError"></div>
+
+  
+    <fieldset id="sauceSignupContainer" class="sauceContainer">	      
+      <legend><h2>Enter my Sauce account...</h2></legend>
+      <label>Username: </label>
+      <input type="text" name="username" id="usernameEnter">
+      <label>Access Key: </label>
+      <input type="password" name="api_key" id="api_key">
+      <button class="pullRight pullDown" type="button" id="save">Save</button>
+    </fieldset>
+    <div style="color: red; " id="sauceEnterError"></div>
+</div>
