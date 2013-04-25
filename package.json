@@ -1,9 +1,10 @@
 {
-  "name": "saucelauncherfirefox",
-  "fullName": "saucelauncherfirefox",
-  "id": "jid1-2PUuLA5e1DIwww",
-  "description": "a basic add-on",
-  "author": "",
-  "license": "MPL 2.0",
-  "version": "0.1"
+    "name": "saucelauncherfirefox",
+    "fullName": "Sauce Launcher",
+    "id": "jid1-2PUuLA5e1DIwww",
+    "description": "Sauce Launcher for Firefox",
+    "author": "Mathieu Sabourin - mathieu@saucelabs.com",
+    "license": "MPL 2.0",
+    "icon": "data/img/sauce_logo.png"
+    "version": "0.1"
 }
