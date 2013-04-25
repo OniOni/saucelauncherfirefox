@@ -34,8 +34,48 @@ var checkCredentials = function(name, key) {
     self.port.emit('check', {username: name, 'access-key': key});
 };
 
+var createAccount = function (payObj) {
+    payObj.username = payObj["usernameCreate"];
+    payObj.token = "0E44EF6E-B170-4CA0-8264-78FD9E49E5CD";
+
+    console.log('Send create_account with ' + payObj);
+    self.port.emit('create_account', payObj);
+};
 
 jQuery(function($){
+    var save = function(name, key) {
+	    localStorage["sauceLaucherUsername"] = name;
+	    localStorage["sauceLaucherAccessKey"] = key;
+    };
+
+    var createPayLoad = function(fieldArray) {
+	var payload = {};
+	for (var i=0;i<fieldArray.length;i++){
+	    var field = fieldArray[i];
+	    var fieldValue = document.getElementById(field).value;
+
+	    //Dont allow empty fields
+	    if (!fieldValue) {
+		throw("All fields are required.");
+	    }
+
+	    //validate email
+	    if (field == "email") {
+		var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+		if (fieldValue.search(emailRegEx) == -1) {
+		    throw("Please provide a valid email address.");
+		}
+	    }
+	    if (field == "password") {
+		if (fieldValue.length < 6) {
+		    throw("Password must be at least 6 characters.");
+		}
+	    }
+	    payload[field] = fieldValue;
+	}
+	return payload;
+    };
+
     $('#save').click(function () {
 	console.log('click');
 	var name = $('#usernameEnter').val();
@@ -46,9 +86,7 @@ jQuery(function($){
 	self.port.on('can_run_job', function () {
 	    var content = $('#sauceContent');
 
-	    localStorage["sauceLaucherUsername"] = name;
-	    localStorage["sauceLaucherAccessKey"] = key;
-
+	    save(name, key);
 
 	    content.addClass('goodnews');
 	    content.html("<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.");
@@ -67,45 +105,23 @@ jQuery(function($){
 	});
 
     });
-    //$('#createAccount').click(createAccount);
+
+    $('#createAccount').click(function () {
+	console.log('click');
+
+	var payLoad = createPayLoad(["name", "email", "password"]);
+
+	console.log('Payload is ' + payLoad);
+	createAccount(payLoad);
+
+	self.port.on('account_created', function (ident) {
+	    var content = $('#sauceContent');
+	    content.html("<h2>Thanks, "+ident.name+"!</h2> You are all set to start Scouting.");
+	});
+
+	self.port.on('account_error', function () {
+	    var error = $('#sauceCreateError');
+	    error.html("There was an error creating your account.");
+	});
+    });
 });
-
-
-var createAccount = function () {
-
-  var sauceCreateError = document.getElementById('sauceCreateError');
-
-  try {
-    var payObj = createPayLoad(["name", "email", "usernameCreate","password"]);
-    payObj.username = payObj["usernameCreate"];
-    payObj.token = "0E44EF6E-B170-4CA0-8264-78FD9E49E5CD";
-
-    var url = sauceURL+"/rest/v1/users";
-    var req = new XMLHttpRequest();
-    req.open('POST', url, true);
-
-    req.onreadystatechange = function (aEvt) {
-      if (req.readyState == 4) {
-	if(req.status == 200) {
-	  var rObj = JSON.parse(req.responseText);
-	  //backwards compat
-	  var key = rObj.access_key;
-	  var name = rObj.id;
-	  //save
-	  sauceUsername(name);
-	  sauceAccessKey(key);
-
-	  var content = document.getElementById('sauceContent');
-	  content.innerHTML = "<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.";
-	}
-	else {
-	  sauceCreateError.innerHTML = "There was an error creating your account.";
-	}
-      }
-    };
-    req.send(JSON.stringify(payObj));
-  }
-  catch(err) {
-    sauceCreateError.innerHTML = err;
-  }
-};
