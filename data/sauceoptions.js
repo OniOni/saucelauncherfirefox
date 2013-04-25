@@ -57,14 +57,17 @@ jQuery(function($){
 
     var notify = function(msg, type, target_id) {
 	type = type || 'good';
-	target_id = target_id || 'sauceContent';
+	target_id = target_id || 'notificationArea';
 
 	var content = $('#'+target_id);
-
-	if (type == 'good')
-	    content.addClass('goodnews');
-
+	content.addClass(type + 'news');
 	content.html(msg);
+
+	setTimeout(function () {
+	    console.log('Fade away... (like a ninja).');
+	    content.removeClass(type + 'news');
+	    content.html("");
+	}, 5000);
     };
 
     $('#save').click(function () {
@@ -81,12 +84,12 @@ jQuery(function($){
 
 	self.port.on('can_not_run_job', function (msg) {
 	    if (msg.indexOf("Invalid") != -1) {
-		notify(msg, 'bad', 'sauceEnterError');
+		notify(msg, 'bad');
 	    } else if (msg.indexOf("parallel") != -1){
-		notify("*Is your limit on parallel tests currently maxed out?", "bad", 'sauceEnterError');
+		notify("*Is your limit on parallel tests currently maxed out?", "bad");
 	    }
 	    else {
-		notify("*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.", 'bad', 'sauceEnterError');
+		notify("*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.", 'bad');
 	    }
 	});
 
@@ -105,7 +108,7 @@ jQuery(function($){
 	});
 
 	self.port.on('account_error', function () {
-	    notify("There was an error creating your account.", 'bad', 'sauceCreateError');
+	    notify("There was an error creating your account.", 'bad');
 	});
     });
 });
