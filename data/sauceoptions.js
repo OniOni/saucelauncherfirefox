@@ -55,6 +55,18 @@ jQuery(function($){
 	return payload;
     };
 
+    var notify = function(msg, type, target_id) {
+	type = type || 'good';
+	target_id = target_id || 'sauceContent';
+
+	var content = $('#'+target_id);
+
+	if (type == 'good')
+	    content.addClass('goodnews');
+
+	content.html(msg);
+    };
+
     $('#save').click(function () {
 	console.log('click');
 	var name = $('#usernameEnter').val();
@@ -63,23 +75,18 @@ jQuery(function($){
 	checkCredentials(name, key);
 
 	self.port.on('can_run_job', function () {
-	    var content = $('#sauceContent');
-
 	    save(name, key);
-
-	    content.addClass('goodnews');
-	    content.html("<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.");
+	    notify("<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.");
 	});
 
 	self.port.on('can_not_run_job', function (msg) {
 	    if (msg.indexOf("Invalid") != -1) {
-		// message here
+		notify(msg, 'bad', 'sauceEnterError');
 	    } else if (msg.indexOf("parallel") != -1){
-		document.getElementById('sauceEnterError').innerHTML = "*Is your limit on parallel tests currently maxed out?";
+		notify("*Is your limit on parallel tests currently maxed out?", "bad", 'sauceEnterError');
 	    }
 	    else {
-		document.getElementById('sauceEnterError').innerHTML = "*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.";
-
+		notify("*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.", 'bad', 'sauceEnterError');
 	    }
 	});
 
@@ -94,13 +101,11 @@ jQuery(function($){
 	createAccount(payLoad);
 
 	self.port.on('account_created', function (ident) {
-	    var content = $('#sauceContent');
-	    content.html("<h2>Thanks, "+ident.name+"!</h2> You are all set to start Scouting.");
+	    notify("<h2>Thanks, "+ident.name+"!</h2> You are all set to start Scouting.");
 	});
 
 	self.port.on('account_error', function () {
-	    var error = $('#sauceCreateError');
-	    error.html("There was an error creating your account.");
+	    notify("There was an error creating your account.", 'bad', 'sauceCreateError');
 	});
     });
 });
