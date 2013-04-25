@@ -104,42 +104,46 @@ var saveValues = function() {
 
     console.log(url);
     console.log(payObj);
-    $.ajax({
-	type: 'POST',
-	url: 'https://saucelabs.com/rest/v1/can_run_job',
-	data: payObj
-    })
-	.done(function (data) {
-	    console.log('Done !')
-	    if (!respObj.result) {
-		if (respObj.msg.indexOf("Invalid") != -1){
-		    return;
-		}
-		else if (respObj.msg.indexOf("parallel") != -1){
-		    document.getElementById('sauceEnterError').innerHTML = "*Is your limit on parallel tests currently maxed out?";
-		    return;
-		}
-		else {
-		    document.getElementById('sauceEnterError').innerHTML = "*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.";
-		    return;
-		}
-	    }
+
+    // $.ajax({
+    // 	type: 'POST',
+    // 	url: 'https://saucelabs.com/rest/v1/can_run_job',
+    // 	data: '{"name": "mathieu"}',
+    // 	beforeSend: function(xhr) {
+    // 	    xhr.setRequestHeader('Host', 'saucelabs.com');
+    // 	}
+    // })
+    // 	.done(function (data) {
+    // 	    console.log('Done !')
+    // 	    if (!respObj.result) {
+    // 		if (respObj.msg.indexOf("Invalid") != -1){
+    // 		    return;
+    // 		}
+    // 		else if (respObj.msg.indexOf("parallel") != -1){
+    // 		    document.getElementById('sauceEnterError').innerHTML = "*Is your limit on parallel tests currently maxed out?";
+    // 		    return;
+    // 		}
+    // 		else {
+    // 		    document.getElementById('sauceEnterError').innerHTML = "*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.";
+    // 		    return;
+    // 		}
+    // 	    }
 	    
-	    if (name && key) {
-		sauceUsername(name);
-		sauceAccessKey(key);
-		var content = document.getElementById('sauceContent');
-		content.classList.add('goodNews');
-		content.innerHTML = "<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.";
-	    }
-	    else {
-		document.getElementById('sauceEnterError').innerHTML = "*Please fill out both fields.";
-	    }
-	})
-	.fail(function (err) {
-	    console.log('Failed ...')
-	    console.log(err);
-	});
+    // 	    if (name && key) {
+    // 		sauceUsername(name);
+    // 		sauceAccessKey(key);
+    // 		var content = document.getElementById('sauceContent');
+    // 		content.classList.add('goodNews');
+    // 		content.innerHTML = "<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.";
+    // 	    }
+    // 	    else {
+    // 		document.getElementById('sauceEnterError').innerHTML = "*Please fill out both fields.";
+    // 	    }
+    // 	})
+    // 	.fail(function (jqXHR, msg) {
+    // 	    console.log('Failed... ' + msg);
+    // 	    console.log(jqXHR);
+    // 	});
 }
 
 $(function () {

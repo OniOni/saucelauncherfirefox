@@ -52,7 +52,16 @@ var ajax = function(args) {
     self.port.on('error', args.error);
 };
 
-var saveCredentials = function(name, key) {
-    self.port.emit()
+var checkCredentials = function(name, key) {
+    console.log('Check Credentials');
+    self.port.emit('check', {username: name, 'access-key': key});
 };
+
+document.getElementById('save').addEventListener('click', function () {
+    console.log('click');
+    var name = document.getElementById('usernameEnter').value;
+    var key = document.getElementById('api_key').value;
+
+    checkCredentials(name, key);
+});
 
