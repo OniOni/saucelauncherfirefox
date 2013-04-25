@@ -1,4 +1,6 @@
-$(function () {
+jQuery(function ($) {
+    console.log('Bootleg is in da house!!');
+
     var max = 0;
     $('.sauceContainer').each(function () {
 	if ($(this).height() > max) {
