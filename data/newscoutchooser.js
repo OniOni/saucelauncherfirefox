@@ -14,7 +14,7 @@ newscoutchooser.url_for = function(browser, version, os) {
     var container = $('<div>');
     return newscoutchooser._build(container, {type: 'url', event:'focus'}, newscoutchooser.def_on_choose, function (self) {
 	// newscoutchooser.build_popup_activator(self.all, self.chooser, 'mouseenter', true);
-	
+
 	self.current_os = os;
 	self.current_browser = {browser: browser, version: version};
 
@@ -27,7 +27,7 @@ newscoutchooser.url_for = function(browser, version, os) {
 	self.chooser.css({
 	    display: 'none'
 	});
- 
+
 	container.keydown(function (event) {
 	    if (!(event.which == ESCAPE_KEY)) {
 		return;
@@ -57,21 +57,21 @@ newscoutchooser.url_for = function(browser, version, os) {
 };
 
 newscoutchooser.build_chooser_only = function (div, on_choose) {
-    return newscoutchooser._build(div, {type: 'chooser'}, 
+    return newscoutchooser._build(div, {type: 'chooser'},
 	function (data) {
 	    // Stuff
 	    on_choose(data.os, data.browser, data.version);
 	},
 	function (self) {
-	    console.log('hey'); 
-            self.chooser.css({
+	    console.log('hey');
+	    self.chooser.css({
 	      width: '600px'
 	    });
-	    
+
 	    self.chooser.find('#browser').css({
 	      width: '48%'
 	    });
-            newscoutchooser.post_processing();
+	    newscoutchooser.post_processing();
    });
 };
 
@@ -80,9 +80,9 @@ newscoutchooser.build_from_url = function (div, on_choose) {
 
 	var url = $(div);
 	url.css('overflow', 'auto');
-	
+
 	newscoutchooser.build_popup_activator(self.all, self.chooser, 'mouseenter', true);
-	
+
 	self.all.css({
 	    display: 'block'
 	});
@@ -106,7 +106,7 @@ newscoutchooser.build = function (div, popup, on_choose) {
 newscoutchooser._build = function (div, popup, on_choose, cb) {
     var element;
 
-    var with_chooser = true, with_search_bar = true;    
+    var with_chooser = true, with_search_bar = true;
 
     if (popup && popup.type != 'chooser') {
 	var link = $(div);
@@ -115,11 +115,11 @@ newscoutchooser._build = function (div, popup, on_choose, cb) {
 
 	if (popup.type == 'popup')
 	    newscoutchooser.build_popup_activator(link, container, popup.event);
-	
+
 	newscoutchooser.build_popup_container(container);
 
 	element = $('<div>');
-	
+
 	container.append(element);
 	if (popup.type == 'popup') {
 	    $('body').append(container);
@@ -137,7 +137,7 @@ newscoutchooser._build = function (div, popup, on_choose, cb) {
     if(popup && popup.type == 'chooser') {
 	with_search_bar = false;
     }
-    
+
     var browsers = {};
 
     element.css({
@@ -167,7 +167,7 @@ newscoutchooser._build = function (div, popup, on_choose, cb) {
 		self.build_search_bar(search_bar);
 		element.append(search_bar);
 	    }
-	    
+
 	    if (with_chooser) {
 		// Set up chooser
 		var chooser = $('<div>');
@@ -177,7 +177,7 @@ newscoutchooser._build = function (div, popup, on_choose, cb) {
 
 	    // Post processing
 	    newscoutchooser.post_processing();
-	
+
 	    if (cb) {
 		console.log('back');
 		self.all = container;
@@ -200,7 +200,7 @@ newscoutchooser.build_popup_activator = function (div, container, event, no_repo
 	if (!no_repositioning) {
 	    var overflow = $(document).width() - (div.offset().left + container.outerWidth());
 	    overflow = (overflow > 0) ? 0 : Math.ceil(overflow);
-	    
+
 	    container.offset ({
 		top: div.offset().top + div.outerHeight(),
 		left: div.offset().left + overflow
@@ -251,7 +251,7 @@ newscoutchooser.init = function (browsers) {
 
     obj.url = "";
 
-    return obj; 
+    return obj;
 };
 
 var translate = {};
@@ -268,7 +268,7 @@ newscoutchooser.get_os_backend_name = function (os, b, v) {
     if (os == 'Mac') {
 	os = 'OSX';
     }
-    
+
     return backend[os][b][v];
 };
 
@@ -298,8 +298,8 @@ newscoutchooser.get_browsers = function (data) {
     }
 
     for (var i in data) {
-	var 
-	b = data[i], 
+	var
+	b = data[i],
 	n = data[i]['long_name'],
 	os = data[i]['os_display'],
 	v = data[i]['short_version'];
@@ -308,7 +308,7 @@ newscoutchooser.get_browsers = function (data) {
 	    browsers[os] = {};
 	if (!browsers[os][n])
 	    browsers[os][n] = [];
-	
+
 	if (browsers[os][n].indexOf(b.short_version) == -1)
 	    browsers[os][n].push(b.short_version);
 
@@ -376,7 +376,7 @@ newscoutchooser.build_url_bar = function (div) {
     div.append(container);
 };
 
-newscoutchooser.build_button = function (button) { 
+newscoutchooser.build_button = function (button) {
     button.css({
 	margin: '1px',
 	'float': 'right'
@@ -392,7 +392,7 @@ newscoutchooser.build_chooser = function (div, browsers) {
     div.addClass('scout-container');
     if (!this.popup)
 	div.addClass('shadow-box');
-    
+
     this.chooser = div;
 
     var pane = {},
@@ -400,7 +400,7 @@ newscoutchooser.build_chooser = function (div, browsers) {
 	os_pane = $('<div>'),
 	browser_pane = $('<div>');
 
-    title.html('Choose os and browser');
+    title.text('Choose os and browser');
     title.addClass('chooser-title');
     div.append(title);
 
@@ -429,8 +429,8 @@ newscoutchooser.build_chooser = function (div, browsers) {
 	});
 
 	var curr_browser = Object.keys(browsers[os])[0],
-            b = {browser: curr_browser,
-	         version: browsers[os][curr_browser][0]};
+	    b = {browser: curr_browser,
+		 version: browsers[os][curr_browser][0]};
 
 	var os_row = $('<div>');
 	this.build_os_row(os_row, os, b, browser_pane, inner_browser_pane);
@@ -442,7 +442,7 @@ newscoutchooser.build_chooser = function (div, browsers) {
 	    inner_browser_pane.attr('id', 'active');
 	    inner_browser_pane.css('display', 'block');
 	    inner_browser_pane.children('.row').first().addClass('active');
-	    
+
 	    this.current_os = os;
 	    this.current_browser = b;
 	    this.update_combo();
@@ -488,7 +488,7 @@ newscoutchooser.build_os_row = function (div, os, browser, pane_div, pane_info) 
     });
     arrow.addClass('scout-center');
 
-    text.html(os);
+    text.text(os);
     text.css({
 	'float': 'left',
 	marginLeft: '3%',
@@ -527,7 +527,7 @@ newscoutchooser.switch_browser_pane = function (pane) {
     // Set new
     pane.css({display: 'block'});
     pane.attr('id', 'active');
-    
+
     pane.find('.row').first().addClass('active');
 
     // Set height
@@ -572,7 +572,7 @@ newscoutchooser.build_browser_row = function (div, browser, version) {
     icon.addClass('icon');
     icon.addClass('scout-center');
 
-    text.html(browser+ ' ' + version);
+    text.text(browser+ ' ' + version);
     text.css({
 	'float': 'left',
 	marginLeft: '3%',
@@ -580,7 +580,7 @@ newscoutchooser.build_browser_row = function (div, browser, version) {
     });
     newscoutchooser.cursor_on_hover(text);
     text.addClass('scout-center');
-    
+
     div.append(icon);
     div.append(text);
 
@@ -623,7 +623,7 @@ newscoutchooser.launch_scout = function () {
 	  introMsg += "<li>Use Sauce Launcher browser Add-ons";
 	  introMsg += "<li>Access to Sauce Automated Testing Cloud</li>";
 	  introMsg += "<center><img style='width:200px;' src="+root+"/images/all_browsers.png'></center>";
-        quicksignup.init(true, window.location, "<b style='font-size:21px'>Sign up!</b>", introMsg, 530, 450);
+	quicksignup.init(true, window.location, "<b style='font-size:21px'>Sign up!</b>", introMsg, 530, 450);
 	return;
     }
 
@@ -635,7 +635,7 @@ newscoutchooser.launch_scout = function () {
 
     var launch_data = {
 	os: newscoutchooser.get_os_backend_name(this.current_os,
-						this.current_browser.browser, 
+						this.current_browser.browser,
 						this.current_browser.version),
 	browser: newscoutchooser.get_browser_short_string(this.current_browser.browser),
 	version: this.current_browser.version,
@@ -647,8 +647,8 @@ newscoutchooser.launch_scout = function () {
 	// Launch logic
 	var self = this;
 	newscoutchooser.check_url(this, function () {
-	   self.on_choose(launch_data);	
-        });
+	   self.on_choose(launch_data);
+	});
     } else {
 	this.on_choose(launch_data);
     }
@@ -748,7 +748,7 @@ newscoutchooser.def_on_choose = function(sc_data) {
 newscoutchooser.update_combo = function () {
     if (!this.combo)
 	return;
-    
+
     // Fix this
     var combo = this.combo;
 
@@ -760,7 +760,7 @@ newscoutchooser.update_combo = function () {
     this.build_combo_element(os, this.current_os);
 
     var plus = $('<span>');
-    plus.html(' + ');
+    plus.text(' + ');
 
     var b = $('<span>');
     this.build_combo_element(b, newscoutchooser.get_browser_short_string(this.current_browser.browser));
@@ -783,10 +783,10 @@ newscoutchooser.build_combo_element = function (div, el) {
 	fontSize: '0.6rem',
 	color: 'grey'
     });
-    name.html(el);
+    name.text(el);
 
     div.append(icon);
-    
+
     if (!this.popup)
 	div.append(name);
 };
