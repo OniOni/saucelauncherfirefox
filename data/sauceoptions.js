@@ -21,41 +21,6 @@ var createAccount = function (payObj) {
     self.port.emit('create_account', payObj);
 };
 
-var saveValues = function() {
-    var name = document.getElementById('usernameEnter').value;
-    var key = document.getElementById('api_key').value;
-    
-    console.log('Login you in !');
-
-    var payObj = {"username": name, "access-key": key};
-    var url = sauceURL+"/rest/v1/can_run_job";
-
-    console.log(url);
-    console.log(JSON.stringify(payObj));
-
-    var req = new XMLHttpRequest();
-    req.open('POST', url, false);
-    req.send(JSON.stringify(payObj));
-
-    var respObj = JSON.parse(req.responseText);
-    if (!respObj.result) {
-	if (respObj.msg.indexOf("Invalid") != -1){
-	    sauceResetUsername();
-	    sauceResetAccessKey();
-	    document.getElementById('sauceEnterError').innerHTML = "*Have your credentials changed?";
-	    return;
-	}
-	else if (respObj.msg.indexOf("parallel") != -1){
-	    document.getElementById('sauceEnterError').innerHTML = "*Is your limit on parallel tests currently maxed out?";
-	    return;
-	}
-	else {
-	    document.getElementById('sauceEnterError').innerHTML = "*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.";
-	    return;
-	}
-    }
-}
-
 jQuery(function($){
     var save = function(name, key) {
 	    localStorage["sauceLaucherUsername"] = name;
@@ -96,12 +61,12 @@ jQuery(function($){
 
 	var content = $('#'+target_id);
 	content.addClass(type + 'news');
-	content.html(msg);
+	content.append(msg);
 
 	setTimeout(function () {
 	    console.log('Fade away... (like a ninja).');
 	    content.removeClass(type + 'news');
-	    content.html("");
+	    content.text('');
 	}, 5000);
     };
 
@@ -114,17 +79,28 @@ jQuery(function($){
 
 	self.port.on('can_run_job', function () {
 	    save(name, key);
-	    notify("<h2>Thanks, "+name+"!</h2> You are all set to start Scouting.");
+	    var msg = $("<span>")
+		    .append($("<h2>", {text:"Thanks, "+name+"!"}))
+		    .append($("<p>", {text: "You are all set to start Scouting."}));
+	    notify(msg);
 	});
 
 	self.port.on('can_not_run_job', function (msg) {
 	    if (msg.indexOf("Invalid") != -1) {
 		notify(msg, 'bad');
 	    } else if (msg.indexOf("parallel") != -1){
-		notify("*Is your limit on parallel tests currently maxed out?", "bad");
+		notify($("<p>", {text: "*Is your limit on parallel tests currently maxed out?"}), "bad");
 	    }
 	    else {
-		notify("*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.", 'bad');
+		var errorMsg = $("<span>")
+			.apppend($("<p>", {text: "*You're out of Sauce Minutes.."})
+				 .append("<a>", {
+				     text: "See our available plans!",
+				     href: "http://www.saucelabs.com/pricing",
+				     css: "cursor:pointer;color:blue;text-decoration:underline;"
+				 })
+				);
+		notify(errorMsg, 'bad');
 	    }
 	});
     });
