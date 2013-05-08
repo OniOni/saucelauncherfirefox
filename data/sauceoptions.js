@@ -21,6 +21,41 @@ var createAccount = function (payObj) {
     self.port.emit('create_account', payObj);
 };
 
+var saveValues = function() {
+    var name = document.getElementById('usernameEnter').value;
+    var key = document.getElementById('api_key').value;
+    
+    console.log('Login you in !');
+
+    var payObj = {"username": name, "access-key": key};
+    var url = sauceURL+"/rest/v1/can_run_job";
+
+    console.log(url);
+    console.log(JSON.stringify(payObj));
+
+    var req = new XMLHttpRequest();
+    req.open('POST', url, false);
+    req.send(JSON.stringify(payObj));
+
+    var respObj = JSON.parse(req.responseText);
+    if (!respObj.result) {
+	if (respObj.msg.indexOf("Invalid") != -1){
+	    sauceResetUsername();
+	    sauceResetAccessKey();
+	    document.getElementById('sauceEnterError').innerHTML = "*Have your credentials changed?";
+	    return;
+	}
+	else if (respObj.msg.indexOf("parallel") != -1){
+	    document.getElementById('sauceEnterError').innerHTML = "*Is your limit on parallel tests currently maxed out?";
+	    return;
+	}
+	else {
+	    document.getElementById('sauceEnterError').innerHTML = "*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.";
+	    return;
+	}
+    }
+}
+
 jQuery(function($){
     var save = function(name, key) {
 	    localStorage["sauceLaucherUsername"] = name;
@@ -92,7 +127,6 @@ jQuery(function($){
 		notify("*You're out of Sauce Minutes..<br><a href='http://www.saucelabs.com/pricing' style='cursor:pointer;color:blue;text-decoration:underline;'>See our available plans!</a>.", 'bad');
 	    }
 	});
-
     });
 
     $('#createAccount').click(function () {
